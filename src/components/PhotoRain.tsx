@@ -107,6 +107,7 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     return () => {
       if (audioRef.current) {
         fadeOut(audioRef.current, 1200);
+        audioRef.current.pause(); 
         audioRef.current = null;
       }
     };

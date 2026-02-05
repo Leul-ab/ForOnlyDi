@@ -99,6 +99,7 @@ const KissPage = ({ onComplete }: KissPageProps) => {
 
       if (audioRef.current) {
         fadeOut(audioRef.current, 1200);
+        audioRef.current.pause(); 
         audioRef.current = null;
       }
     };

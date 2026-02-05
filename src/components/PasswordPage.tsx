@@ -15,7 +15,7 @@ const PasswordPage = ({ onSuccess }: PasswordPageProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === '02092025') {
+    if (password === '27122025') {
       onSuccess();
     } else {
       setError(true);
