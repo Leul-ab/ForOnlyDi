@@ -70,9 +70,20 @@ const KissPage = ({ onComplete }: KissPageProps) => {
     }, 250);
 
     // 🎵 Audio setup
-    audioRef.current = new Audio('/kisssound.ogg');
-    audioRef.current.loop = true;
+    //audioRef.current = new Audio(`${import.meta.env.BASE_URL}kisssound.ogg`);
+    <audio
+      ref={audioRef}
+      src={`${import.meta.env.BASE_URL}kisssound.ogg`}
+      preload="auto"
+      loop
+    ></audio>
 
+
+
+    //audioRef.current.loop = true;
+
+
+    
     const startAudio = async () => {
       try {
         await audioRef.current?.play();

@@ -7,15 +7,27 @@ interface PhotoRainProps {
 }
 
 // Photos from /public/us
+// const photos = [
+//   '/us/IMG_0215.PNG',
+//   '/us/IMG_0216.JPG',
+//   '/us/laaa.jpg',
+//   '/us/IMG_0218.JPG',
+//   '/us/IMG_0219.JPG',
+//   '/us/IMG_0220.PNG',
+//   '/us/IMG_9208.JPG',
+// ];
+
+
 const photos = [
-  '/us/IMG_0215.PNG',
-  '/us/IMG_0216.JPG',
-  '/us/laaa.jpg',
-  '/us/IMG_0218.JPG',
-  '/us/IMG_0219.JPG',
-  '/us/IMG_0220.PNG',
-  '/us/IMG_9208.JPG',
+  `${import.meta.env.BASE_URL}us/IMG_0215.PNG`,
+  `${import.meta.env.BASE_URL}us/IMG_0216.JPG`,
+  `${import.meta.env.BASE_URL}us/laaa.jpg`,
+  `${import.meta.env.BASE_URL}us/IMG_0218.JPG`,
+  `${import.meta.env.BASE_URL}us/IMG_0219.JPG`,
+  `${import.meta.env.BASE_URL}us/IMG_0220.PNG`,
+  `${import.meta.env.BASE_URL}us/IMG_9208.JPG`,
 ];
+
 
 interface FallingPhoto {
   id: number;
@@ -78,7 +90,7 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     setFallingPhotos(newPhotos);
 
     // Setup ambient audio
-    audioRef.current = new Audio('/missyouso.mp3');
+    audioRef.current = new Audio(`${import.meta.env.BASE_URL}missyouso.mp3`);
     audioRef.current.loop = true;
 
     const playAudio = async () => {
