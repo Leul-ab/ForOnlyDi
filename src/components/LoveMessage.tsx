@@ -43,7 +43,8 @@ const LoveMessage = ({ onNext }: LoveMessageProps) => {
   };
 
   useEffect(() => {
-    audioRef.current = new Audio('/diewithasmile.mp3');
+    //audioRef.current = new Audio('/diewithasmile.mp3');
+    audioRef.current = new Audio(`${import.meta.env.BASE_URL}diewithasmile.mp3`);
     audioRef.current.loop = true;
 
     const startAudio = async () => {

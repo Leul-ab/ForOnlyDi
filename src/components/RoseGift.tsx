@@ -42,7 +42,8 @@ const RoseGift = ({ onComplete }: RoseGiftProps) => {
   };
 
   useEffect(() => {
-    audioRef.current = new Audio("/bruno-mars.mp3");
+    audioRef.current = new Audio(`${import.meta.env.BASE_URL}bruno-mars.mp3`);
+    //audioRef.current = new Audio("/bruno-mars.mp3");
     audioRef.current.loop = true;
 
     const startAudio = async () => {
@@ -84,10 +85,11 @@ const RoseGift = ({ onComplete }: RoseGiftProps) => {
 
       <div className="z-10 animate-float">
         <img
-          src="/redrose.gif"
+          src={`${import.meta.env.BASE_URL}redrose.gif`}
           alt="Romantic Bouquet"
           className="w-64 md:w-80 drop-shadow-xl hover:scale-105 transition-transform duration-500"
         />
+
       </div>
 
       <style>{`
