@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 350 100% 98%;
+    --foreground: 350 30% 20%;
+
+    --card: 350 80% 97%;
+    --card-foreground: 350 30% 20%;
+
+    --popover: 350 80% 97%;
+    --popover-foreground: 350 30% 20%;
+
+    --primary: 350 80% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 350 50% 92%;
+    --secondary-foreground: 350 30% 30%;
+
+    --muted: 350 30% 90%;
+    --muted-foreground: 350 20% 50%;
+
+    --accent: 0 85% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 350 40% 85%;
+    --input: 350 40% 85%;
+    --ring: 350 80% 60%;
+
+    --radius: 1rem;
+
+    /* Custom romantic tokens */
+    --rose-light: 350 100% 95%;
+    --rose-medium: 350 80% 75%;
+    --rose-dark: 350 60% 45%;
+    --blush: 20 80% 90%;
+    --gold: 40 90% 65%;
+    --heart-red: 0 90% 60%;
+    --heart-pink: 340 90% 70%;
+    
+    /* Gradients */
+    --gradient-romantic: linear-gradient(135deg, hsl(350 100% 95%) 0%, hsl(340 80% 90%) 50%, hsl(350 70% 85%) 100%);
+    --gradient-love: linear-gradient(180deg, hsl(350 80% 60%) 0%, hsl(0 85% 65%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(350 80% 75%) 0%, hsl(20 80% 75%) 50%, hsl(40 90% 75%) 100%);
+    
+    /* Shadows */
+    --shadow-glow: 0 0 30px hsl(350 80% 60% / 0.3);
+    --shadow-heart: 0 0 40px hsl(0 90% 60% / 0.5);
+    --shadow-soft: 0 10px 40px hsl(350 30% 20% / 0.1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 350 30% 10%;
+    --foreground: 350 20% 95%;
+    --card: 350 30% 15%;
+    --card-foreground: 350 20% 95%;
+    --popover: 350 30% 15%;
+    --popover-foreground: 350 20% 95%;
+    --primary: 350 70% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 350 30% 20%;
+    --secondary-foreground: 350 20% 90%;
+    --muted: 350 20% 25%;
+    --muted-foreground: 350 20% 70%;
+    --accent: 0 75% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 350 20% 25%;
+    --input: 350 20% 25%;
+    --ring: 350 70% 55%;
+    
+    --gradient-romantic: linear-gradient(135deg, hsl(350 30% 15%) 0%, hsl(340 25% 20%) 50%, hsl(350 20% 18%) 100%);
+    --shadow-glow: 0 0 30px hsl(350 70% 55% / 0.4);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Dancing Script', cursive;
+  }
+}
+
+@layer components {
+  .romantic-bg {
+    background: var(--gradient-romantic);
+  }
+
+  .love-gradient {
+    background: var(--gradient-love);
+  }
+
+  .text-romantic {
+    @apply text-primary;
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  .glow-heart {
+    filter: drop-shadow(0 0 20px hsl(var(--accent) / 0.6));
+  }
+
+  .heart-pulse {
+    animation: heartPulse 1.5s ease-in-out infinite;
+  }
+
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .sparkle {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  @keyframes heartPulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes heartFloat {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes photoFall {
+    0% {
+      transform: translateY(-100px) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(15deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+    }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .animate-heart-float {
+    animation: heartFloat 6s ease-in-out infinite;
+  }
+
+  .animate-photo-fall {
+    animation: photoFall 8s linear infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+}
