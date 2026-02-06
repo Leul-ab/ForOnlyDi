@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Heart, Star, ArrowRight, Sparkles, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import FloatingHearts from './FloatingHearts';
+import { getPreloadedAudio } from '../lib/preload';
 //import { getPreloadedAudio } from '@/lib/preload';
 
 
@@ -100,8 +101,13 @@ const LoveMessage = ({ onNext }: LoveMessageProps) => {
 
   useEffect(() => {
     
-    audioRef.current = new Audio(`${import.meta.env.BASE_URL}diewithasmile.mp3`);
-    audioRef.current.loop = true;
+    const src = `${import.meta.env.BASE_URL}diewithasmile.mp3`;
+
+audioRef.current =getPreloadedAudio(src) || new Audio(src);
+
+audioRef.current.loop = true;
+
+
 
     const startAudio = async () => {
       try {

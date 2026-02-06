@@ -4,33 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import FloatingHearts from './FloatingHearts';
 //import { preloadAudio } from '@/lib/preload';
-//import { preloadAudio, preloadImage } from '@/lib/preload';
+import { preloadAudio, preloadImage } from '@/lib/preload';
 
 interface PasswordPageProps {
   onSuccess: () => void;
 }
 
-// useEffect(() => {
-//   const base = import.meta.env.BASE_URL;
 
-//   // 🎵 Preload all audios
-//   preloadAudio(`${base}kisssound.mp3`);
-//   preloadAudio(`${base}diewithasmile.mp3`);
-//   preloadAudio(`${base}missyouso.mp3`);
 
-//   // 📸 Preload all photos
-//   const photos = [
-//     `${base}us/IMG_0215.PNG`,
-//     `${base}us/IMG_0216.JPG`,
-//     `${base}us/laaa.jpg`,
-//     `${base}us/IMG_0218.JPG`,
-//     `${base}us/IMG_0219.JPG`,
-//     `${base}us/IMG_0220.PNG`,
-//     `${base}us/IMG_9208.JPG`,
-//   ];
-
-//   photos.forEach(preloadImage);
-// }, []);
 
 
 
@@ -144,6 +125,33 @@ const PasswordPage = ({ onSuccess }: PasswordPageProps) => {
   const [error, setError] = useState(false);
   const [shake, setShake] = useState(false);
   const [burstKey, setBurstKey] = useState(0);
+   
+  useEffect(() => {
+  const base = import.meta.env.BASE_URL;
+
+  // preload everything
+  preloadAudio(`${base}kisssound.mp3`);
+  preloadAudio(`${base}diewithasmile.mp3`);
+  preloadAudio(`${base}missyouso.mp3`);
+  preloadAudio(`${base}bruno-mars.mp3`);
+
+  const photos = [
+    `${base}us/IMG_0215.PNG`,
+    `${base}us/IMG_0216.JPG`,
+    `${base}us/laaa.jpg`,
+    `${base}us/IMG_0218.JPG`,
+    `${base}us/IMG_0219.JPG`,
+    `${base}us/IMG_0220.PNG`,
+    `${base}us/IMG_9208.JPG`,
+  ];
+
+  photos.forEach(preloadImage);
+  preloadImage(`${base}redrose.gif`);
+}, []);
+
+
+
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

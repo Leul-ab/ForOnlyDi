@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume2 } from "lucide-react";
 import FloatingHearts from "./FloatingHearts";
+import { getPreloadedAudio, preloadImage } from "../lib/preload";
 
 interface RoseGiftProps {
   onComplete: () => void;
@@ -30,6 +31,10 @@ const heartColors = [
 ];
 
 const RoseGift = ({ onComplete }: RoseGiftProps) => {
+  useEffect(() => {
+    const base = import.meta.env.BASE_URL;
+    preloadImage(`${base}redrose.gif`);
+  }, []);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [bursts, setBursts] = useState<Burst[]>([]);
   const lastTapRef = useRef(0);
@@ -67,8 +72,12 @@ const RoseGift = ({ onComplete }: RoseGiftProps) => {
   };
 
   useEffect(() => {
-    audioRef.current = new Audio(`${import.meta.env.BASE_URL}bruno-mars.mp3`);
-    audioRef.current.loop = true;
+    const src = `${import.meta.env.BASE_URL}bruno-mars.mp3`;
+
+audioRef.current =getPreloadedAudio(src) || new Audio(src);
+
+audioRef.current.loop = true;
+
 
     const startAudio = async () => {
       try {

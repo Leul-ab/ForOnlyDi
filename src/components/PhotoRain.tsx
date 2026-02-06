@@ -1,22 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Heart, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getPreloadedAudio } from '@/lib/preload';
 
 interface PhotoRainProps {
   onNext: () => void;
 }
-
-// Photos from /public/us
-// const photos = [
-//   '/us/IMG_0215.PNG',
-//   '/us/IMG_0216.JPG',
-//   '/us/laaa.jpg',
-//   '/us/IMG_0218.JPG',
-//   '/us/IMG_0219.JPG',
-//   '/us/IMG_0220.PNG',
-//   '/us/IMG_9208.JPG',
-// ];
-
 
 const photos = [
   `${import.meta.env.BASE_URL}us/IMG_0215.PNG`,
@@ -27,7 +16,6 @@ const photos = [
   `${import.meta.env.BASE_URL}us/IMG_0220.PNG`,
   `${import.meta.env.BASE_URL}us/IMG_9208.JPG`,
 ];
-
 
 interface FallingPhoto {
   id: number;
@@ -89,8 +77,12 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     }
     setFallingPhotos(newPhotos);
 
-    // Setup ambient audio
-    audioRef.current = new Audio(`${import.meta.env.BASE_URL}missyouso.mp3`);
+    // Setup ambient audio (reuse preloaded if available)
+    const src = `${import.meta.env.BASE_URL}missyouso.mp3`;
+
+    audioRef.current =
+      getPreloadedAudio(src) || new Audio(src);
+
     audioRef.current.loop = true;
 
     const playAudio = async () => {
@@ -98,7 +90,7 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
         await audioRef.current?.play();
         fadeIn(audioRef.current!, 2500, 0.25);
       } catch {
-        // Autoplay blocked — indicator will guide user
+        // Autoplay might be blocked until user interacts
       }
     };
 
@@ -107,7 +99,7 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     return () => {
       if (audioRef.current) {
         fadeOut(audioRef.current, 1200);
-        audioRef.current.pause(); 
+        audioRef.current.pause();
         audioRef.current = null;
       }
     };
@@ -115,7 +107,6 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
 
   return (
     <div className="min-h-screen romantic-bg flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      
       {/* Falling photos */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {fallingPhotos.map((photo) => (
@@ -146,7 +137,6 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
       {/* Content */}
       <div className="relative z-10 text-center animate-fade-in mt-16 md:mt-24">
         <div className="bg-card/60 backdrop-blur-lg rounded-3xl p-2 md:p-4 shadow-xl max-w-xs mx-auto">
-
           {/* Sound indicator */}
           <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground animate-pulse">
             <Volume2 className="w-4 h-4" />
@@ -171,7 +161,6 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
             One More Thing...
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
-
         </div>
       </div>
     </div>

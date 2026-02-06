@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import FloatingHearts from './FloatingHearts';
 import { Button } from '@/components/ui/button';
 import { Volume2 } from 'lucide-react';
+import { getPreloadedAudio } from '../lib/preload';
 
 interface KissPageProps {
   onComplete: () => void;
@@ -70,8 +71,8 @@ const KissPage = ({ onComplete }: KissPageProps) => {
     }, 250);
 
     // 🎵 Audio setup
-    
-    audioRef.current = new Audio(`${import.meta.env.BASE_URL}kisssound.mp3`);
+    const src = `${import.meta.env.BASE_URL}kisssound.mp3`;
+    audioRef.current = getPreloadedAudio(src) || new Audio(src);
     
 
 
