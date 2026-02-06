@@ -81,9 +81,9 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
       newPhotos.push({
         id: i,
         src: photos[i % photos.length],
-        left: Math.random() * 90 + 5,
+        left: Math.random() * 100,
         delay: Math.random() * 8,
-        duration: 6 + Math.random() * 4,
+        duration: 8 + Math.random() * 5,
         rotation: Math.random() * 30 - 15,
       });
     }
@@ -130,7 +130,7 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
             }}
           >
             <div
-              className="w-24 h-24 md:w-32 md:h-32 rounded-lg shadow-lg overflow-hidden border-4 border-card bg-card"
+              className="w-32 h-32 md:w-40 md:h-40 rounded-lg shadow-lg overflow-hidden border-4 border-card bg-card"
               style={{ transform: `rotate(${photo.rotation}deg)` }}
             >
               <img
@@ -144,8 +144,8 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center animate-fade-in">
-        <div className="bg-card/90 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-xl">
+      <div className="relative z-10 text-center animate-fade-in mt-16 md:mt-24">
+        <div className="bg-card/60 backdrop-blur-lg rounded-3xl p-2 md:p-4 shadow-xl max-w-xs mx-auto">
 
           {/* Sound indicator */}
           <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground animate-pulse">

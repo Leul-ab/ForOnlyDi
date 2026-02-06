@@ -70,7 +70,8 @@ const KissPage = ({ onComplete }: KissPageProps) => {
     }, 250);
 
     // 🎵 Audio setup
-    audioRef.current = new Audio(`${import.meta.env.BASE_URL}kisssound.ogg`);
+    
+    audioRef.current = new Audio(`${import.meta.env.BASE_URL}kisssound.mp3`);
     
 
 
@@ -110,7 +111,7 @@ const KissPage = ({ onComplete }: KissPageProps) => {
       <FloatingHearts />
 
       {/* 🔊 Sound indicator */}
-      <div className="absolute top-6 z-20 flex items-center gap-2 text-sm text-muted-foreground animate-pulse">
+      <div className="absolute top-75 z-20 flex items-center gap-2 text-sm text-muted-foreground animate-pulse">
         <Volume2 className="w-4 h-4" />
         <span>Turn your sound on 🎧</span>
       </div>

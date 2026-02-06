@@ -1,21 +1,77 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Heart, Star, ArrowRight, Sparkles, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import FloatingHearts from './FloatingHearts';
+//import { getPreloadedAudio } from '@/lib/preload';
+
 
 interface LoveMessageProps {
   onNext: () => void;
 }
 
+/* 💖 Heart Rain Background */
+const HeartRain = () => {
+  const [hearts, setHearts] = useState<any[]>([]);
+  const emojis = ['❤️', '💖', '💕', '💗', '💓', '💘'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const heart = {
+        id: Math.random(),
+        emoji: emojis[Math.floor(Math.random() * emojis.length)],
+        left: Math.random() * 100,
+        size: 30 + Math.random() * 50,
+        duration: 4 + Math.random() * 3,
+      };
+
+      setHearts(prev => [...prev, heart]);
+
+      setTimeout(
+        () => setHearts(prev => prev.filter(h => h.id !== heart.id)),
+        heart.duration * 1000
+      );
+    }, 400); // heart spawn speed
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      {hearts.map(h => (
+        <span
+          key={h.id}
+          className="absolute animate-heart-fall select-none"
+          style={{
+            left: `${h.left}%`,
+            fontSize: h.size,
+            animationDuration: `${h.duration}s`,
+          }}
+        >
+          {h.emoji}
+        </span>
+      ))}
+
+      <style>{`
+        @keyframes heartFall {
+          0% { transform: translateY(-10vh); opacity: 0; }
+          10% { opacity: 0.8; }
+          100% { transform: translateY(110vh); opacity: 0; }
+        }
+        .animate-heart-fall {
+          animation-name: heartFall;
+          animation-timing-function: linear;
+          animation-fill-mode: forwards;
+        }
+      `}</style>
+    </div>
+  );
+};
+
 const LoveMessage = ({ onNext }: LoveMessageProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Fade in audio
-  const fadeIn = (
-    audio: HTMLAudioElement,
-    duration = 2500,
-    targetVolume = 0.25
-  ) => {
+  const fadeIn = (audio: HTMLAudioElement, duration = 2500, targetVolume = 0.25) => {
     audio.volume = 0;
     const step = targetVolume / (duration / 50);
 
@@ -43,7 +99,7 @@ const LoveMessage = ({ onNext }: LoveMessageProps) => {
   };
 
   useEffect(() => {
-    //audioRef.current = new Audio('/diewithasmile.mp3');
+    
     audioRef.current = new Audio(`${import.meta.env.BASE_URL}diewithasmile.mp3`);
     audioRef.current.loop = true;
 
@@ -73,7 +129,9 @@ const LoveMessage = ({ onNext }: LoveMessageProps) => {
 
   return (
     <div className="min-h-screen romantic-bg flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background effects */}
       <FloatingHearts />
+      <HeartRain />
 
       {/* 🔊 Sound indicator */}
       <div className="absolute top-6 z-20 flex items-center gap-2 text-sm text-muted-foreground animate-pulse">
@@ -82,7 +140,7 @@ const LoveMessage = ({ onNext }: LoveMessageProps) => {
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto">
-        <div className="bg-card/80 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-xl animate-fade-in">
+        <div className="bg-card/50 backdrop-blur-lg rounded-3xl p-8 md:p-12 shadow-xl animate-fade-in">
 
           <div className="flex justify-center mb-6">
             <div className="relative">
