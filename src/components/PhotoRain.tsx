@@ -14,7 +14,6 @@ const photos = [
   `${import.meta.env.BASE_URL}us/IMG_0218.JPG`,
   `${import.meta.env.BASE_URL}us/IMG_0219.JPG`,
   `${import.meta.env.BASE_URL}us/IMG_0220.PNG`,
-  //`${import.meta.env.BASE_URL}us/IMG_9208.JPG`,
   `${import.meta.env.BASE_URL}us/IMG_0224.PNG`,
 ];
 
@@ -32,9 +31,15 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
   const [fallingPhotos, setFallingPhotos] = useState<FallingPhoto[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const fadeIn = (audio: HTMLAudioElement, duration = 2500, targetVolume = 0.25) => {
+  // 🔊 Fade in audio
+  const fadeIn = (
+    audio: HTMLAudioElement,
+    duration = 2500,
+    targetVolume = 0.25
+  ) => {
     audio.volume = 0;
     const step = targetVolume / (duration / 50);
+
     const fade = setInterval(() => {
       if (audio.volume < targetVolume) {
         audio.volume = Math.min(audio.volume + step, targetVolume);
@@ -44,8 +49,10 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     }, 50);
   };
 
+  // 🔇 Fade out audio
   const fadeOut = (audio: HTMLAudioElement, duration = 1200) => {
     const step = audio.volume / (duration / 50);
+
     const fade = setInterval(() => {
       if (audio.volume > 0) {
         audio.volume = Math.max(audio.volume - step, 0);
@@ -57,49 +64,59 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
   };
 
   useEffect(() => {
-    const newPhotos: FallingPhoto[] = [];
+    // 📸 Generate falling photos
+    const generated: FallingPhoto[] = [];
     for (let i = 0; i < 20; i++) {
-      newPhotos.push({
+      generated.push({
         id: i,
         src: photos[i % photos.length],
-        left: Math.random() * 90, // Keep slightly away from extreme edges
+        left: Math.random() * 90,
         delay: Math.random() * 10,
         duration: 10 + Math.random() * 7,
         rotation: Math.random() * 40 - 20,
-        size: 100 + Math.random() * 60, // Randomized sizes for depth
+        size: 100 + Math.random() * 60,
       });
     }
-    setFallingPhotos(newPhotos);
+    setFallingPhotos(generated);
 
+    // 🎵 Audio setup (same pattern as KissPage)
     const src = `${import.meta.env.BASE_URL}missyouso.mp3`;
     audioRef.current = getPreloadedAudio(src) || new Audio(src);
+
     if (audioRef.current) {
       audioRef.current.loop = true;
     }
 
-    const playAudio = async () => {
+    const startAudio = async () => {
       try {
         await audioRef.current?.play();
         fadeIn(audioRef.current!, 2500, 0.25);
-      } catch (e) {
-        console.log("Autoplay blocked");
+      } catch {
+        // autoplay blocked
       }
+
+      window.removeEventListener('click', startAudio);
     };
 
-    playAudio();
+    // Try autoplay + fallback
+    window.addEventListener('click', startAudio);
+    startAudio();
 
     return () => {
+      window.removeEventListener('click', startAudio);
+
       if (audioRef.current) {
         fadeOut(audioRef.current, 1200);
+        audioRef.current = null;
       }
     };
   }, []);
 
   return (
     <div className="relative min-h-screen w-full romantic-bg overflow-hidden flex flex-col">
-      {/* Background Layer: Falling photos */}
+      {/* 🌧 Falling photos */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {fallingPhotos.map((photo) => (
+        {fallingPhotos.map(photo => (
           <div
             key={photo.id}
             className="absolute animate-photo-fall opacity-80"
@@ -112,10 +129,10 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
           >
             <div
               className="rounded-xl shadow-2xl overflow-hidden border-2 border-white/30 bg-white/10 backdrop-blur-[2px]"
-              style={{ 
+              style={{
                 transform: `rotate(${photo.rotation}deg)`,
                 width: `${photo.size}px`,
-                height: `${photo.size}px`
+                height: `${photo.size}px`,
               }}
             >
               <img
@@ -128,30 +145,26 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
         ))}
       </div>
 
-      {/* Foreground Layer: UI Content */}
+      {/* 💖 Foreground UI */}
       <div className="relative z-10 flex flex-col justify-between items-center min-h-screen w-full p-6 pointer-events-none">
-        
-        {/* Top: Branding/Icon */}
         <div className="mt-16 animate-pulse">
-          <Heart className="w-14 h-14 text-white fill-accent drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+          <Heart className="w-5 h-5 text-white fill-accent drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
         </div>
 
-        {/* Middle: Open space for photos to be seen */}
         <div className="flex-grow" />
 
-        {/* Bottom: Information Card */}
         <div className="w-full max-w-sm mb-12 pointer-events-auto">
-          <div className="bg-white/20 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-8 text-center shadow-2xl">
-            <div className="flex items-center justify-center gap-2 mb-4 text-[10px] uppercase tracking-[0.2em] text-white/60">
+          <div className="bg-black/20 backdrop-blur-xl border border-white/50 rounded-[2.5rem] p-3 text-center shadow-2xl">
+            <div className="flex items-center justify-center gap-2 mb-4 text-[10px] uppercase tracking-[0.2em] text-white/60 animate-pulse">
               <Volume2 className="w-4 h-4" />
-        <span>Turn your sound on 🎧</span>
+              <span>Turn your sound on 🎧</span>
             </div>
 
             <h1 className="font-script text-4xl md:text-5xl text-romantic mb-4">
               Our Beautiful Memories
             </h1>
 
-            <p className="text-white/80 text-sm mb-8 font-light leading-relaxed px-4">
+            <p className="text-white/80 text-sm mb-8 font-dark leading-relaxed px-4">
               Every photo tells a story of us, <br />
               a treasure I hold close to my heart.
             </p>
@@ -167,10 +180,13 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
         </div>
       </div>
 
-      {/* Bottom Vignette to help text readability */}
+      {/* 🌑 Bottom vignette */}
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-5" />
     </div>
   );
 };
 
+
+
 export default PhotoRain;
+
