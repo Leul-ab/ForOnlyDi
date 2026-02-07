@@ -223,7 +223,7 @@ const PasswordPage = ({ onSuccess }: PasswordPageProps) => {
         </form>
 
         <p className="text-center text-muted-foreground/60 text-sm mt-6">
-          Hint: The day we became us 💑
+          Hint: The day we became us
         </p>
       </div>
     </div>
