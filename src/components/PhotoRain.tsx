@@ -31,7 +31,8 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
   const [fallingPhotos, setFallingPhotos] = useState<FallingPhoto[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // 🔊 Fade in audio
+  /* ================= AUDIO HELPERS ================= */
+
   const fadeIn = (
     audio: HTMLAudioElement,
     duration = 2500,
@@ -49,7 +50,6 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     }, 50);
   };
 
-  // 🔇 Fade out audio
   const fadeOut = (audio: HTMLAudioElement, duration = 1200) => {
     const step = audio.volume / (duration / 50);
 
@@ -63,8 +63,20 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     }, 50);
   };
 
+  // 🔥 HARD STOP (mobile + Safari safe)
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0;
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+  };
+
+  /* ================= EFFECT ================= */
+
   useEffect(() => {
-    // 📸 Generate falling photos
+    /* 📸 Generate falling photos */
     const generated: FallingPhoto[] = [];
     for (let i = 0; i < 20; i++) {
       generated.push({
@@ -79,7 +91,7 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     }
     setFallingPhotos(generated);
 
-    // 🎵 Audio setup (same pattern as KissPage)
+    /* 🎵 Audio setup */
     const src = `${import.meta.env.BASE_URL}missyouso.mp3`;
     audioRef.current = getPreloadedAudio(src) || new Audio(src);
 
@@ -98,12 +110,22 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
       window.removeEventListener('click', startAudio);
     };
 
-    // Try autoplay + fallback
+    // Autoplay attempt + click fallback
     window.addEventListener('click', startAudio);
     startAudio();
 
+    /* 🧠 Safari / Mobile lifecycle safety */
+    const handleVisibility = () => {
+      if (document.hidden) stopAudio();
+    };
+
+    window.addEventListener('pagehide', stopAudio);
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
       window.removeEventListener('click', startAudio);
+      window.removeEventListener('pagehide', stopAudio);
+      document.removeEventListener('visibilitychange', handleVisibility);
 
       if (audioRef.current) {
         fadeOut(audioRef.current, 1200);
@@ -111,6 +133,8 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
       }
     };
   }, []);
+
+  /* ================= UI ================= */
 
   return (
     <div className="relative min-h-screen w-full romantic-bg overflow-hidden flex flex-col">
@@ -170,7 +194,10 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
             </p>
 
             <Button
-              onClick={onNext}
+              onClick={() => {
+                stopAudio(); // 🔥 mobile & Safari-safe stop
+                onNext();
+              }}
               className="w-full love-gradient text-white py-7 text-lg rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 transition-all duration-300 flex items-center justify-center"
             >
               One More Thing...
@@ -186,7 +213,4 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
   );
 };
 
-
-
 export default PhotoRain;
-
