@@ -14,7 +14,8 @@ const photos = [
   `${import.meta.env.BASE_URL}us/IMG_0218.JPG`,
   `${import.meta.env.BASE_URL}us/IMG_0219.JPG`,
   `${import.meta.env.BASE_URL}us/IMG_0220.PNG`,
-  `${import.meta.env.BASE_URL}us/IMG_9208.JPG`,
+  //`${import.meta.env.BASE_URL}us/IMG_9208.JPG`,
+  `${import.meta.env.BASE_URL}us/IMG_0224.PNG`,
 ];
 
 interface FallingPhoto {
@@ -24,21 +25,16 @@ interface FallingPhoto {
   delay: number;
   duration: number;
   rotation: number;
+  size: number;
 }
 
 const PhotoRain = ({ onNext }: PhotoRainProps) => {
   const [fallingPhotos, setFallingPhotos] = useState<FallingPhoto[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Smooth fade-in
-  const fadeIn = (
-    audio: HTMLAudioElement,
-    duration = 2500,
-    targetVolume = 0.25
-  ) => {
+  const fadeIn = (audio: HTMLAudioElement, duration = 2500, targetVolume = 0.25) => {
     audio.volume = 0;
     const step = targetVolume / (duration / 50);
-
     const fade = setInterval(() => {
       if (audio.volume < targetVolume) {
         audio.volume = Math.min(audio.volume + step, targetVolume);
@@ -48,10 +44,8 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     }, 50);
   };
 
-  // Smooth fade-out
   const fadeOut = (audio: HTMLAudioElement, duration = 1200) => {
     const step = audio.volume / (duration / 50);
-
     const fade = setInterval(() => {
       if (audio.volume > 0) {
         audio.volume = Math.max(audio.volume - step, 0);
@@ -63,34 +57,32 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
   };
 
   useEffect(() => {
-    // Create falling photos
     const newPhotos: FallingPhoto[] = [];
     for (let i = 0; i < 20; i++) {
       newPhotos.push({
         id: i,
         src: photos[i % photos.length],
-        left: Math.random() * 100,
-        delay: Math.random() * 8,
-        duration: 8 + Math.random() * 5,
-        rotation: Math.random() * 30 - 15,
+        left: Math.random() * 90, // Keep slightly away from extreme edges
+        delay: Math.random() * 10,
+        duration: 10 + Math.random() * 7,
+        rotation: Math.random() * 40 - 20,
+        size: 100 + Math.random() * 60, // Randomized sizes for depth
       });
     }
     setFallingPhotos(newPhotos);
 
-    // Setup ambient audio (reuse preloaded if available)
     const src = `${import.meta.env.BASE_URL}missyouso.mp3`;
-
-    audioRef.current =
-      getPreloadedAudio(src) || new Audio(src);
-
-    audioRef.current.loop = true;
+    audioRef.current = getPreloadedAudio(src) || new Audio(src);
+    if (audioRef.current) {
+      audioRef.current.loop = true;
+    }
 
     const playAudio = async () => {
       try {
         await audioRef.current?.play();
         fadeIn(audioRef.current!, 2500, 0.25);
-      } catch {
-        // Autoplay might be blocked until user interacts
+      } catch (e) {
+        console.log("Autoplay blocked");
       }
     };
 
@@ -99,30 +91,32 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
     return () => {
       if (audioRef.current) {
         fadeOut(audioRef.current, 1200);
-        audioRef.current.pause();
-        audioRef.current = null;
       }
     };
   }, []);
 
   return (
-    <div className="min-h-screen romantic-bg flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Falling photos */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+    <div className="relative min-h-screen w-full romantic-bg overflow-hidden flex flex-col">
+      {/* Background Layer: Falling photos */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
         {fallingPhotos.map((photo) => (
           <div
             key={photo.id}
-            className="absolute animate-photo-fall"
+            className="absolute animate-photo-fall opacity-80"
             style={{
               left: `${photo.left}%`,
-              top: '-150px',
+              top: '-200px',
               animationDelay: `${photo.delay}s`,
               animationDuration: `${photo.duration}s`,
             }}
           >
             <div
-              className="w-32 h-32 md:w-40 md:h-40 rounded-lg shadow-lg overflow-hidden border-4 border-card bg-card"
-              style={{ transform: `rotate(${photo.rotation}deg)` }}
+              className="rounded-xl shadow-2xl overflow-hidden border-2 border-white/30 bg-white/10 backdrop-blur-[2px]"
+              style={{ 
+                transform: `rotate(${photo.rotation}deg)`,
+                width: `${photo.size}px`,
+                height: `${photo.size}px`
+              }}
             >
               <img
                 src={photo.src}
@@ -134,35 +128,47 @@ const PhotoRain = ({ onNext }: PhotoRainProps) => {
         ))}
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center animate-fade-in mt-16 md:mt-24">
-        <div className="bg-card/60 backdrop-blur-lg rounded-3xl p-2 md:p-4 shadow-xl max-w-xs mx-auto">
-          {/* Sound indicator */}
-          <div className="flex items-center justify-center gap-2 mb-4 text-sm text-muted-foreground animate-pulse">
-            <Volume2 className="w-4 h-4" />
-            <span>Turn your sound on 🎧</span>
+      {/* Foreground Layer: UI Content */}
+      <div className="relative z-10 flex flex-col justify-between items-center min-h-screen w-full p-6 pointer-events-none">
+        
+        {/* Top: Branding/Icon */}
+        <div className="mt-16 animate-pulse">
+          <Heart className="w-14 h-14 text-white fill-accent drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+        </div>
+
+        {/* Middle: Open space for photos to be seen */}
+        <div className="flex-grow" />
+
+        {/* Bottom: Information Card */}
+        <div className="w-full max-w-sm mb-12 pointer-events-auto">
+          <div className="bg-white/20 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-8 text-center shadow-2xl">
+            <div className="flex items-center justify-center gap-2 mb-4 text-[10px] uppercase tracking-[0.2em] text-white/60">
+              <Volume2 className="w-4 h-4" />
+        <span>Turn your sound on 🎧</span>
+            </div>
+
+            <h1 className="font-script text-4xl md:text-5xl text-romantic mb-4">
+              Our Beautiful Memories
+            </h1>
+
+            <p className="text-white/80 text-sm mb-8 font-light leading-relaxed px-4">
+              Every photo tells a story of us, <br />
+              a treasure I hold close to my heart.
+            </p>
+
+            <Button
+              onClick={onNext}
+              className="w-full love-gradient text-white py-7 text-lg rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 transition-all duration-300 flex items-center justify-center"
+            >
+              One More Thing...
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
-
-          <Heart className="w-16 h-16 text-accent fill-accent mx-auto mb-4 heart-pulse" />
-
-          <h1 className="font-script text-4xl md:text-5xl text-romantic mb-4">
-            Our Beautiful Memories
-          </h1>
-
-          <p className="text-muted-foreground mb-8 max-w-md">
-            Every photo tells a story of us,  
-            every moment a treasure I hold dear.
-          </p>
-
-          <Button
-            onClick={onNext}
-            className="love-gradient text-primary-foreground px-8 py-6 text-lg rounded-2xl"
-          >
-            One More Thing...
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
         </div>
       </div>
+
+      {/* Bottom Vignette to help text readability */}
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-5" />
     </div>
   );
 };

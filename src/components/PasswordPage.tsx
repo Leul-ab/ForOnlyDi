@@ -142,7 +142,8 @@ const PasswordPage = ({ onSuccess }: PasswordPageProps) => {
     `${base}us/IMG_0218.JPG`,
     `${base}us/IMG_0219.JPG`,
     `${base}us/IMG_0220.PNG`,
-    `${base}us/IMG_9208.JPG`,
+    //`${base}us/IMG_9208.JPG`,
+    `${base}us/IMG_0224.PNG`,
   ];
 
   photos.forEach(preloadImage);
